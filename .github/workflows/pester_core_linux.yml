@@ -1,0 +1,29 @@
+﻿name: Core Lin
+on:
+  pull_request:
+    branches: [ main ]
+    paths: 
+    - 'source/**'
+    - 'tests/**'
+  push:
+    branches: [ main ]
+    paths: 
+    - 'source/**'
+    - 'tests/**'
+jobs:
+  test-posh:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run Pester unit tests
+      run: |
+        Write-host $PSVersionTable.PSVersion.Major $PSVersionTable.PSRemotingProtocolVersion.Minor
+        Set-PSRepository psgallery -InstallationPolicy trusted
+        Import-Module -Name Pester -Force
+        $PesterConfiguration = [PesterConfiguration]::Default
+        $PesterConfiguration.Run.Path = "tests/unit"
+        $PesterConfiguration.Run.Exit = $true
+        $PesterConfiguration.Filter.ExcludeTag = 'WindowsOnly'
+        $PesterConfiguration.Output.Verbosity = "Detailed"
+        Invoke-Pester -Configuration $PesterConfiguration
+      shell: pwsh
