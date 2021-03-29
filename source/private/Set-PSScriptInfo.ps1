@@ -44,7 +44,7 @@ function Set-PSScriptInfo
         throw 'Failed to parse input JSON, input is not valid JSON'
     }
 
-    $JSON = ("<#PSScriptInfo`n{0}`nPSScriptInfo#>`n" -f $JSON)
+    $JSON = ("<#PSScriptInfo$([system.environment]::NewLine){0}$([system.environment]::NewLine)PSScriptInfo#>$([system.environment]::NewLine)" -f $JSON)
     Write-Verbose 'Added prefix and suffix to JSON block'
 
     try
@@ -57,7 +57,7 @@ function Set-PSScriptInfo
         throw ('Failed to read content from filepath with error: {0}' -f $_.exception.message)
     }
 
-    $StringBuilder = [System.Text.StringBuilder]::new(($FileContent) -join "`n")
+    $StringBuilder = [System.Text.StringBuilder]::new(($FileContent) -join ([system.environment]::NewLine))
     Write-Verbose -Message ('Created stringbuilder')
 
     $null = $StringBuilder.Insert(0, ($JSON))
