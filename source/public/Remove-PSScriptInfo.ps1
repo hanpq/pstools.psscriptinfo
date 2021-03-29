@@ -13,12 +13,11 @@ function Remove-PSScriptInfo
 {
     <#
     .DESCRIPTION
-        
-    .PARAMETER Name
-        Description
+        Removes a PSScriptInfo block from a script file
+    .PARAMETER FilePath
+        Path to file where PSScriptInfo block should be removed
     .EXAMPLE
-        Remove-PSScriptInfo
-        Description of example
+        Remove-PSScriptInfo -FilePath C:\Script\file.ps1
     #>
 
     [CmdletBinding()] # Enabled advanced function support
@@ -26,10 +25,7 @@ function Remove-PSScriptInfo
         [ValidateScript( { Test-Path -Path $_.FullName -PathType Leaf })]
         [Parameter(Mandatory)]
         [system.io.fileinfo]
-        $FilePath,
-
-        [hashtable]
-        $Properties
+        $FilePath
     )
 
     PROCESS
