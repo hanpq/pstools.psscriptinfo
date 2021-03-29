@@ -37,7 +37,7 @@ function Set-PSScriptInfo
     {
         try
         {
-            $JSON = ("<#PSScriptInfo`n{0}`nPSScriptInfo#>" -f $JSON)
+            $JSON = ("<#PSScriptInfo`n{0}`nPSScriptInfo#>`n" -f $JSON)
             Write-Verbose 'Added prefix and suffix to JSON block'
         }
         catch
@@ -80,7 +80,7 @@ function Set-PSScriptInfo
 
         try
         {
-            $StringBuilder.ToString() | Set-Content -Path $FilePath -Encoding utf8BOM -ErrorAction Stop
+            $StringBuilder.ToString() | Set-Content -Path $FilePath -Encoding utf8 -ErrorAction Stop
             Write-Verbose -Message ('Successfully wrote content block back to file')
         }
         catch

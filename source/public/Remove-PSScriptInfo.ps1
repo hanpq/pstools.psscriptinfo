@@ -59,7 +59,7 @@ function Remove-PSScriptInfo
             throw "Failed to parse powershell script file with error: $PSItem"
         }
 
-        if (-not $PSScriptInfoText)
+        if (-not $PSScriptInfo)
         {
             throw 'No PSScriptInfo found in file'
         }
@@ -81,7 +81,7 @@ function Remove-PSScriptInfo
         # Exclude PSScriptInfo
         try
         {
-            $NewContent = ($FileContent | Select-Object -First ($StartLine - 1) -ErrorAction stop) + ($FileContent | Select-Object -Skip ($EndLine + 1) -ErrorAction Stop)
+            $NewContent = ($FileContent | Select-Object -First ($StartLine - 1) -ErrorAction stop) + ($FileContent | Select-Object -Skip ($EndLine) -ErrorAction Stop)
             Write-Verbose -Message 'Concatinated content around removed PSScriptInfo'
         }
         catch
