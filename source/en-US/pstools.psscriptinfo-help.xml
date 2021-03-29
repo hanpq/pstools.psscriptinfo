@@ -180,7 +180,7 @@
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>{{ Fill in the Description }}</maml:para>
+      <maml:para>Removes a PSScriptInfo block from a script file</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -188,23 +188,11 @@
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
           <maml:name>FilePath</maml:name>
           <maml:description>
-            <maml:para>{{ Fill FilePath Description }}</maml:para>
+            <maml:para>Path to file where PSScriptInfo block should be removed</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">FileInfo</command:parameterValue>
           <dev:type>
             <maml:name>FileInfo</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
-          <maml:name>Properties</maml:name>
-          <maml:description>
-            <maml:para>{{ Fill Properties Description }}</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">Hashtable</command:parameterValue>
-          <dev:type>
-            <maml:name>Hashtable</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -215,23 +203,11 @@
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
         <maml:name>FilePath</maml:name>
         <maml:description>
-          <maml:para>{{ Fill FilePath Description }}</maml:para>
+          <maml:para>Path to file where PSScriptInfo block should be removed</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">FileInfo</command:parameterValue>
         <dev:type>
           <maml:name>FileInfo</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
-        <maml:name>Properties</maml:name>
-        <maml:description>
-          <maml:para>{{ Fill Properties Description }}</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">Hashtable</command:parameterValue>
-        <dev:type>
-          <maml:name>Hashtable</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -247,9 +223,9 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
-        <dev:code>Remove-PSScriptInfo</dev:code>
+        <dev:code>Remove-PSScriptInfo -FilePath C:\Script\file.ps1</dev:code>
         <dev:remarks>
-          <maml:para>Description of example</maml:para>
+          <maml:para></maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>

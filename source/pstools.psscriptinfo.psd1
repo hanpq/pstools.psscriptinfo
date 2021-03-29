@@ -1,6 +1,7 @@
-﻿@{
+﻿
+@{
   RootModule = 'pstools.psscriptinfo.psm1'
-  ModuleVersion = '1.0.2'
+  ModuleVersion = '1.1'
   CompatiblePSEditions = @('Desktop','Core')
   GUID = 'f49be34c-e1a9-4e1e-9a98-ed2b72b78efa'
   Author = 'Hannes Palmquist'
@@ -13,7 +14,7 @@
   PrivateData = @{
     ModuleName = 'pstools.psscriptinfo.psm1'
     DateCreated = '2021-03-27'
-    LastBuildDate = '2021-03-29'
+    LastBuildDate = '2021-03-30'
     PSData = @{
       Tags = @('PSEdition_Desktop','PSEdition_Core','Windows','Linux','MacOS')
       ProjectUri = 'https://getps.dev/modules/pstools.psscriptinfo/quickstart'

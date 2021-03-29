@@ -12,25 +12,23 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Remove-PSScriptInfo [-FilePath] <FileInfo> [[-Properties] <Hashtable>] [<CommonParameters>]
+Remove-PSScriptInfo [-FilePath] <FileInfo> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-{{ Fill in the Description }}
+Removes a PSScriptInfo block from a script file
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 ```
-Remove-PSScriptInfo
+Remove-PSScriptInfo -FilePath C:\Script\file.ps1
 ```
-
-Description of example
 
 ## PARAMETERS
 
 ### -FilePath
-{{ Fill FilePath Description }}
+Path to file where PSScriptInfo block should be removed
 
 ```yaml
 Type: FileInfo
@@ -39,21 +37,6 @@ Aliases:
 
 Required: True
 Position: 1
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Properties
-{{ Fill Properties Description }}
-
-```yaml
-Type: Hashtable
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
