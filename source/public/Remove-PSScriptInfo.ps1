@@ -49,15 +49,9 @@ function Remove-PSScriptInfo
         }
 
         # Find PSScriptInfo comment token
-        try
-        {
-            $PSScriptInfo = $astTokens.where{ $_.kind -eq 'comment' -and $_.text.Replace("`r", '').Split("`n")[0] -like '<#PSScriptInfo*' }
-            Write-Verbose -Message 'Parsed powershell script file and extracted raw PSScriptInfoText'
-        }
-        catch
-        {
-            throw "Failed to parse powershell script file with error: $PSItem"
-        }
+        $PSScriptInfo = $astTokens.where{ $_.kind -eq 'comment' -and $_.text.Replace("`r", '').Split("`n")[0] -like '<#PSScriptInfo*' }
+        Write-Verbose -Message 'Parsed powershell script file and extracted raw PSScriptInfoText'
+
 
         if (-not $PSScriptInfo)
         {
@@ -79,15 +73,8 @@ function Remove-PSScriptInfo
         }
         
         # Exclude PSScriptInfo
-        try
-        {
-            $NewContent = ($FileContent | Select-Object -First ($StartLine - 1) -ErrorAction stop) + ($FileContent | Select-Object -Skip ($EndLine) -ErrorAction Stop)
-            Write-Verbose -Message 'Concatinated content around removed PSScriptInfo'
-        }
-        catch
-        {
-            throw "Failed to concatinate strings with error: $PSItem"
-        }
+        $NewContent = ($FileContent | Select-Object -First ($StartLine - 1) -ErrorAction stop) + ($FileContent | Select-Object -Skip ($EndLine) -ErrorAction Stop)
+        Write-Verbose -Message 'Concatinated content around removed PSScriptInfo'
 
         # Write content back to file
         try

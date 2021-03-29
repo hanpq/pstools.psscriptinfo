@@ -44,15 +44,8 @@ function Get-PSScriptInfo
         }
 
         # Find PSScriptInfo comment token
-        try
-        {
-            $PSScriptInfoText = $astTokens.where{ $_.kind -eq 'comment' -and $_.text.Replace("`r", '').Split("`n")[0] -like '<#PSScriptInfo*' } | Select-Object -expand text
-            Write-Verbose -Message 'Parsed powershell script file and extracted raw PSScriptInfoText'
-        }
-        catch
-        {
-            throw "Failed to parse powershell script file with error: $PSItem"
-        }
+        $PSScriptInfoText = $astTokens.where{ $_.kind -eq 'comment' -and $_.text.Replace("`r", '').Split("`n")[0] -like '<#PSScriptInfo*' } | Select-Object -expand text -ErrorAction stop
+        Write-Verbose -Message 'Parsed powershell script file and extracted raw PSScriptInfoText'
 
         if (-not $PSScriptInfoText)
         {

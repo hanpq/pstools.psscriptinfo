@@ -13,12 +13,13 @@ function Set-PSScriptInfo
 {
     <#
     .DESCRIPTION
-        
-    .PARAMETER Name
-        Description
+        Adds a PSScriptInfo block to a file
+    .PARAMETER FilePath
+        FilePath for file to set PSScriptInfo for
+    .PARAMETER JSON
+        String value containing json formatted PSScriptInfo
     .EXAMPLE
-        Set-PSScriptInfo
-        Description of example
+        Set-PSScriptInfo -Filepath C:\Script\Get-Test.ps1 -JSON $JSON
     #>
 
     [CmdletBinding()] # Enabled advanced function support
@@ -33,62 +34,45 @@ function Set-PSScriptInfo
         $JSON
     )
 
-    BEGIN
+    try
     {
-        try
-        {
-            $JSON = ("<#PSScriptInfo`n{0}`nPSScriptInfo#>`n" -f $JSON)
-            Write-Verbose 'Added prefix and suffix to JSON block'
-        }
-        catch
-        {
-            throw "Failed to add prefix and suffix to JSON block with error: $PSItem"
-        }
+        $null = $JSON | ConvertFrom-Json -ErrorAction Stop
+        Write-Verbose 'Tested JSON input for valid JSON'
+    }
+    catch
+    {
+        throw 'Failed to parse input JSON, input is not valid JSON'
     }
 
-    PROCESS
+    $JSON = ("<#PSScriptInfo`n{0}`nPSScriptInfo#>`n" -f $JSON)
+    Write-Verbose 'Added prefix and suffix to JSON block'
+
+    try
     {
-        try
-        {
-            $FileContent = Get-Content -Path $FilePath -ErrorAction Stop
-            Write-Verbose -Message ('Read content from filepath')
-        }
-        catch
-        {
-            throw ('Failed to read content from filepath with error: {0}' -f $_.exception.message)
-        }
-
-        try
-        {
-            $StringBuilder = [System.Text.StringBuilder]::new(($FileContent) -join "`n")
-            Write-Verbose -Message ('Created stringbuilder')
-        }
-        catch
-        {
-            throw ('Failed to create stringbuilder with error: {0}' -f $_.exception.message)
-        }
-
-        try
-        {
-            $null = $StringBuilder.Insert(0, ($JSON))
-            Write-Verbose -Message ('Inserted PSScriptInfo at beginning of content block')
-        }
-        catch
-        {
-            throw ('Failed to insert PSScriptInfo at beginning of content block with error: {0}' -f $_.exception.message)
-        }
-
-        try
-        {
-            $StringBuilder.ToString() | Set-Content -Path $FilePath -Encoding utf8 -ErrorAction Stop
-            Write-Verbose -Message ('Successfully wrote content block back to file')
-        }
-        catch
-        {
-            throw ('Failed to write content block back to file with error: {0}' -f $_.exception.message)
-        }
-
+        $FileContent = Get-Content -Path $FilePath -ErrorAction Stop
+        Write-Verbose -Message ('Read content from filepath')
     }
+    catch
+    {
+        throw ('Failed to read content from filepath with error: {0}' -f $_.exception.message)
+    }
+
+    $StringBuilder = [System.Text.StringBuilder]::new(($FileContent) -join "`n")
+    Write-Verbose -Message ('Created stringbuilder')
+
+    $null = $StringBuilder.Insert(0, ($JSON))
+    Write-Verbose -Message ('Inserted PSScriptInfo at beginning of content block')
+
+    try
+    {
+        $StringBuilder.ToString() | Set-Content -Path $FilePath -Encoding utf8 -ErrorAction Stop
+        Write-Verbose -Message ('Successfully wrote content block back to file')
+    }
+    catch
+    {
+        throw ('Failed to write content block back to file with error: {0}' -f $_.exception.message)
+    }
+
 
 }
 #endregion
