@@ -13,12 +13,28 @@ function Update-PSScriptInfo
 {
     <#
     .DESCRIPTION
-        
-    .PARAMETER Name
-        Description
+        Replaces PSScriptInfo settings. Properties defined the properties 
+        parameter that do not exist in the existing PSScriptInfo are added, 
+        already existing settings set to $null are removed and existing 
+        properties with a non-null value are updated. 
+    .PARAMETER FilePath
+        File path to file to update PSScriptInfo in.
+    .PARAMETER Properties
+        Hashtable with properties to add,remove and change.
     .EXAMPLE
-        Update-PSScriptInfo
-        Description of example
+        Update-PSScriptInfo -Filepath C:\Script\Get-Test.ps1 -Properties @{Version="1.0.0.1";IsPreRelease=$null;IsReleased=$true}
+        
+        Assuming that the specified file contains a PSScriptInfo block with the properties Version:"0.0.1.4" and IsPreRelease="true" this example would 
+        - Update version
+        - Remove IsPreRelease
+        - Add IsReleased
+
+        <#PSScriptInfo
+        {
+            "Version":"1.0.0.1",
+            "IsReleased":"true"
+        }
+        PSScriptInfo#>
     #>
 
     [CmdletBinding()] # Enabled advanced function support
