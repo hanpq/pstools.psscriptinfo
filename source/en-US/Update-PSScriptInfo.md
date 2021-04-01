@@ -16,21 +16,36 @@ Update-PSScriptInfo [-FilePath] <FileInfo> [[-Properties] <Hashtable>] [<CommonP
 ```
 
 ## DESCRIPTION
-{{ Fill in the Description }}
+Replaces PSScriptInfo settings.
+Properties defined the properties 
+parameter that do not exist in the existing PSScriptInfo are added, 
+already existing settings set to $null are removed and existing 
+properties with a non-null value are updated.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 ```
-Update-PSScriptInfo
+Update-PSScriptInfo -Filepath C:\Script\Get-Test.ps1 -Properties @{Version="1.0.0.1";IsPreRelease=$null;IsReleased=$true}
 ```
 
-Description of example
+Assuming that the specified file contains a PSScriptInfo block with the properties Version:"0.0.1.4" and IsPreRelease="true" this example would 
+- Update version
+- Remove IsPreRelease
+- Add IsReleased
+
+\<#PSScriptInfo
+{
+    "Version":"1.0.0.1",
+    "IsReleased":"true"
+}
+PSScriptInfo
+\>
 
 ## PARAMETERS
 
 ### -FilePath
-{{ Fill FilePath Description }}
+File path to file to update PSScriptInfo in.
 
 ```yaml
 Type: FileInfo
@@ -45,7 +60,7 @@ Accept wildcard characters: False
 ```
 
 ### -Properties
-{{ Fill Properties Description }}
+Hashtable with properties to add,remove and change.
 
 ```yaml
 Type: Hashtable
