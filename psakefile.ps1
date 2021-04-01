@@ -417,7 +417,7 @@ Task -name 'SetupBuildEnv' -depends @(
     'CreateMissingFolders',
     'ValidateModuleConfiguration',
     'FindMissingTests',
-    #'UpdateFunctionPSScriptInfo',
+    'UpdateFunctionPSScriptInfo',
     'RebuildManifest',
     'UpdateFunctionsToExport',
     'UpdateLastBuildDate',
@@ -681,10 +681,12 @@ Task -name 'ValidateModuleConfiguration' -action {
         {
             Write-CheckListItem -Severity Intermediate -Message 'PSGallery is enabled but github is not'
         }
+        <#
         { $_.psgallery -and -not $_.sign } # PSGallery depends on Sign 
         {
             Write-CheckListItem -Severity Negative -Message 'If PSGallery should be used, Sign must be enabled aswell'; throw
         }
+#>
         { $_.getpsdev -and -not $_.createzip } # GetPSDev depends on createzip
         {
             Write-CheckListItem -Severity Negative -Message 'If GetPSDev should be used, CreateZIP must be enabled aswell'; throw
