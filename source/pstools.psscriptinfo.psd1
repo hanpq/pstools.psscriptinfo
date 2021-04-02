@@ -14,7 +14,7 @@
     PrivateData            = @{
         ModuleName    = 'pstools.psscriptinfo.psm1'
         DateCreated   = '2021-03-27'
-        LastBuildDate = '2021-04-01'
+        LastBuildDate = '2021-04-02'
         PSData        = @{
             Tags                       = @('PSEdition_Desktop', 'PSEdition_Core', 'Windows', 'Linux', 'MacOS')
             ProjectUri                 = 'https://getps.dev/modules/pstools.psscriptinfo/quickstart'
