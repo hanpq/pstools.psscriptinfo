@@ -100,10 +100,9 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
-        <dev:code>Add-PSScriptInfo -FilePath C:\Scripts\Do-Something.ps1 -Properties @{Version='1.0.0';Author='Jane Doe';DateCreated='2021-01-01'}
-Adds a PSScriptInfo block containing the properties version and author. Resulting PSScriptInfo block 
-that would be added to the beginning of the file would look like:</dev:code>
+        <dev:code>Add-PSScriptInfo -FilePath C:\Scripts\Do-Something.ps1 -Properties @{Version='1.0.0';Author='Jane Doe';DateCreated='2021-01-01'}</dev:code>
         <dev:remarks>
+          <maml:para>Adds a PSScriptInfo block containing the properties version and author. Resulting PSScriptInfo block  that would be added to the beginning of the file would look like:</maml:para>
           <maml:para>&lt;#PSScriptInfo {     "Version" : "1.0.0",     "Author" : "Jane Doe",     "DateCreated" : "2021-01-01" } PSScriptInfo &gt;</maml:para>
         </dev:remarks>
       </command:example>
