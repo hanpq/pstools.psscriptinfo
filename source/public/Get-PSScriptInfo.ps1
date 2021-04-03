@@ -55,12 +55,22 @@ function Get-PSScriptInfo
         # Extract PSScriptInfo from JSON
         try
         {
-            $PSScriptInfo = $PSScriptInfoText.Split("`n") | Select-Object -Skip 1 -ErrorAction Stop | Select-Object -SkipLast 1 -ErrorAction Stop | ConvertFrom-Json -ErrorAction Stop
+            $PSScriptInfoRaw = $PSScriptInfoText.Split("`n") | Select-Object -Skip 1 -ErrorAction Stop | Select-Object -SkipLast 1 -ErrorAction Stop
+            $PSScriptInfo = $PSScriptInfoRaw | ConvertFrom-Json -ErrorAction Stop
             Write-Verbose -Message 'Parsed PSScriptInfo to JSON'
         }
         catch
         {
-            throw "Failed to parse PSScriptInfo to JSON with error: $PSItem"
+            if (($PSScriptInfoRaw[0].Trim() -like '.*') -and $_.exception.message -like '*Invalid JSON primitive*')
+            {
+                # Legacy PSScriptInfo
+                Write-Verbose -Message 'Standard JSON parsing failed, trying legacy...'
+                $PSScriptInfo = Get-PSScriptInfoLegacy -FilePath $FilePath
+            }
+            else
+            {
+                throw "Failed to parse PSScriptInfo to JSON with error: $PSItem"
+            }
         }
 
         return $PSScriptInfo
