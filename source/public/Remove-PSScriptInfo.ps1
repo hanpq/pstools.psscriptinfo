@@ -1,13 +1,15 @@
 ﻿<#PSScriptInfo
-    .VERSION                       1.0.0.0
-    .GUID                          1d1a8e42-48bf-4c9f-9d62-e01484b5eb1a
-    .FILENAME                      Remove-PSScriptInfo.ps1
-    .AUTHOR                        Hannes Palmquist
-    .AUTHOREMAIL                   hannes.palmquist@outlook.com
-    .CREATEDDATE                   2021-03-28
-    .COMPANYNAME                   N/A
-    .COPYRIGHT                     © 2021, Hannes Palmquist, All Rights Reserved
-#>
+{
+    "VERSION":  "1.0.0.0",
+    "GUID":  "1d1a8e42-48bf-4c9f-9d62-e01484b5eb1a",
+    "FILENAME":  "Remove-PSScriptInfo.ps1",
+    "AUTHOR":  "Hannes Palmquist",
+    "AUTHOREMAIL":  "hannes.palmquist@outlook.com",
+    "CREATEDDATE":  "2021-03-28",
+    "COMPANYNAME":  "N/A",
+    "COPYRIGHT":  "© 2021, Hannes Palmquist, All Rights Reserved"
+}
+PSScriptInfo#>
 
 function Remove-PSScriptInfo
 {

@@ -1,13 +1,15 @@
 ﻿<#PSScriptInfo
-    .VERSION                       1.0.0.0
-    .GUID                          d7aa9d44-79bc-49d3-867f-97a760ca8c8f
-    .FILENAME                      Update-PSScriptInfo.ps1
-    .AUTHOR                        Hannes Palmquist
-    .AUTHOREMAIL                   hannes.palmquist@outlook.com
-    .CREATEDDATE                   2019-09-24
-    .COMPANYNAME                   N/A
-    .COPYRIGHT                     © 2019, Hannes Palmquist, All Rights Reserved
-#>
+{
+    "VERSION":  "1.0.0.0",
+    "GUID":  "d7aa9d44-79bc-49d3-867f-97a760ca8c8f",
+    "FILENAME":  "Update-PSScriptInfo.ps1",
+    "AUTHOR":  "Hannes Palmquist",
+    "AUTHOREMAIL":  "hannes.palmquist@outlook.com",
+    "CREATEDDATE":  "2019-09-24",
+    "COMPANYNAME":  "N/A",
+    "COPYRIGHT":  "© 2019, Hannes Palmquist, All Rights Reserved"
+}
+PSScriptInfo#>
 
 function Update-PSScriptInfo
 {
