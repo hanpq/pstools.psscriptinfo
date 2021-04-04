@@ -1,6 +1,6 @@
 ﻿@{
   RootModule = 'pstools.psscriptinfo.psm1'
-  ModuleVersion = '1.3.3'
+  ModuleVersion = '1.3.5'
   CompatiblePSEditions = @('Desktop','Core')
   GUID = 'f49be34c-e1a9-4e1e-9a98-ed2b72b78efa'
   Author = 'Hannes Palmquist'
@@ -45,7 +45,6 @@
   CLRVersion = ''
   ProcessorArchitecture = ''
 }
-
 
 
 
