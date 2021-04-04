@@ -417,7 +417,7 @@ Task -name 'BuildScriptDependencies' {
     $Modules = @('pstools.psscriptinfo', 'configuration', 'pester')
     foreach ($module in $modules)
     {
-        if (-not (Get-Module -name $module -ListAvailable))
+        if (-not (Get-Module -Name $module -ListAvailable))
         {
             Write-CheckListItem -Severity Negative -Message "Module [$module] was not found, aborting..."
             break
@@ -847,7 +847,7 @@ Task -name 'UpdateFileList' -action {
             Push-Location -Path $path_root_source
             $AllSourceFiles = Get-ChildItem -Path $path_root_source -Exclude 'logs', 'output', 'temp' | Get-ChildItem -File -Recurse
             $AllSourceFiles | ForEach-Object {
-                $PSItem | Add-Member -MemberType NoteProperty -Name RelativePath -Value (
+                $PSItem | Add-Member -MemberType NoteProperty -name RelativePath -Value (
                     Resolve-Path -Path $PSItem.FullName -Relative
                 )
             }
@@ -933,10 +933,10 @@ Task -name 'CreateModuleHelpFiles' -action {
     try
     {
         $Measure = Measure-Command -Expression {
-            Import-Module -Name $path_modulemanifest -Scope Global -ErrorAction Stop
+            Import-Module -name $path_modulemanifest -Scope Global -ErrorAction Stop
             $null = New-MarkdownHelp -Module $modulename -OutputFolder (Join-Path -Path $path_root_source -ChildPath '\en-US') -Force -ErrorAction Stop
             $null = New-ExternalHelp -Path (Join-Path -Path $path_root_source -ChildPath '\en-US') -OutputPath (Join-Path -Path $path_root_source -ChildPath '\en-US') -Force -ErrorAction Stop
-            Remove-Module -Name $modulename -Force -ErrorAction Stop
+            Remove-Module -name $modulename -Force -ErrorAction Stop
         }
     }
     catch
@@ -1002,7 +1002,7 @@ Task -name 'ExportSign' -precondition { $buildconfig.Sign } -action {
         {
             try
             {
-                $Cert = New-CodeSigningCert -name 'HannesPalmquist' -FriendlyName 'HannesPalmquist' -ErrorAction Stop
+                $Cert = New-CodeSigningCert -Name 'HannesPalmquist' -FriendlyName 'HannesPalmquist' -ErrorAction Stop
                 Write-CheckListItem -Message 'Successfully created Code Signing Certificate' -Severity Positive
             }
             catch
@@ -1016,7 +1016,7 @@ Task -name 'ExportSign' -precondition { $buildconfig.Sign } -action {
             Remove-Item -Path ('Cert:\CurrentUser\My\{0}' -f $Cert.Thumbprint) -Force
             try
             {
-                $Cert = New-CodeSigningCert -name 'HannesPalmquist' -FriendlyName 'HannesPalmquist' -ErrorAction Stop
+                $Cert = New-CodeSigningCert -Name 'HannesPalmquist' -FriendlyName 'HannesPalmquist' -ErrorAction Stop
                 Write-CheckListItem -Message 'Successfully renewed Code Signing Certificate' -Severity Positive
             }
             catch
@@ -1175,45 +1175,52 @@ Task -name 'ExportPushModule' -precondition { $buildconfig.PushLocal } -action {
         Sort-Object -Property 'VersionObject' -Descending |
         Select-Object -Skip 2 | 
         ForEach-Object {
-
-            # Workaround, a bug with remove-item and onedrive with enabled filesondemand caused it to fail when removing items. However 
-            # using the Delete method of the file item circumvents this issue.
             $currentitem = $PSItem
-            $path = $currentitem.fullname
-            $Counter = 0
-            while ((Get-ChildItem $path -Recurse) -and $Counter -le 10)
+            try
             {
-                $AllItems = Get-ChildItem $path -Recurse | Sort-Object -Property fullname -Descending
-                $AllItems | ForEach-Object {
+                # Workaround, a bug with remove-item and onedrive with enabled filesondemand caused it to fail when removing items. However 
+                # using the Delete method of the file item circumvents this issue.
+                $path = $currentitem.fullname
+                $Counter = 0
+                while ((Get-ChildItem $path -Recurse) -and $Counter -le 10)
+                {
+                    $AllItems = Get-ChildItem $path -Recurse | Sort-Object -Property fullname -Descending
+                    $AllItems | ForEach-Object {
+                        try
+                        {
+                            $PSItem.Delete()
+                        }
+                        catch
+                        {
+
+                        }
+                    }
+
+                    $Counter++
+                }
+                if ($counter -gt 10)
+                {
+                    Write-CheckListItem -Message ('Failed to remove old version: {0} with error: loop counter exceeded' -f $CurrentItem.Name) -Severity Negative
+                }
+                else
+                {
                     try
                     {
-                        $PSItem.Delete()
+                        $Item = Get-Item $path
+                        $Item.Delete()
+                        Write-CheckListItem -Message ('Successfully removed old version: {0}' -f $CurrentItem.Name) -Severity Positive
                     }
                     catch
                     {
-
-                    }
+                        Write-CheckListItem -Message ('Failed to remove old version: {0} with error: {1}' -f $CurrentItem.Name, $_.exception.message) -Severity Negative
+                    } 
                 }
-
-                $Counter++
             }
-            if ($counter -gt 10)
+            catch
             {
-                Write-CheckListItem -Message ('Failed to remove old version: {0} with error: loop counter exceeded' -f $CurrentItem.Name) -Severity Negative
+                Write-CheckListItem -Message ('Failed to remove old version: {0} with error: {1}' -f $CurrentItem.Name, $_.exception.message) -Severity Negative
             }
-            else
-            {
-                try
-                {
-                    $Item = Get-Item $path
-                    $Item.Delete()
-                    Write-CheckListItem -Message ('Successfully removed old version: {0}' -f $CurrentItem.Name) -Severity Positive
-                }
-                catch
-                {
-                    Write-CheckListItem -Message ('Failed to remove old version: {0} with error: {1}' -f $CurrentItem.Name, $_.exception.message) -Severity Negative
-                } 
-            }
+            
         }
     }
 } 
