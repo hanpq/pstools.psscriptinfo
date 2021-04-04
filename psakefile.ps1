@@ -377,6 +377,44 @@ function Set-FileEndOfLine
     }
 }
 
+function InvokePesterHelper
+{
+    param (
+        [ValidateSet('Unit', 'Module', 'Integration')]$TypeOfTest,
+        [ValidateSet('powershell', 'pwsh')]$powershellhost,
+        $pathroot
+    )
+
+    $path_root = 'C:\Users\hanpalmq\OneDrive\DEV\Powershell\modules\pstools.daikin'
+    $PesterRun = @"
+    Import-Module Pester
+    `$PesterConfig = [PesterConfiguration]::Default
+    `$PesterConfig.Run.Path = '{0}\Tests\{1}'
+    `$PesterConfig.Run.PassThru = `$true
+    `$PesterConfig.Output.Verbosity = 'Detailed'
+    `$Result = Invoke-Pester -Configuration `$PesterConfig
+    if (`$Result.FailedCount -gt 0) {{throw}}
+"@ -f $pathroot, $TypeOfTest
+    $pinfo = New-Object System.Diagnostics.ProcessStartInfo
+    $pinfo.FileName = $powershellhost
+    $pinfo.RedirectStandardError = $true
+    $pinfo.RedirectStandardOutput = $false
+    $pinfo.UseShellExecute = $false
+    $pinfo.Arguments = '-noprofile', '-command', $PesterRun
+    $p = New-Object System.Diagnostics.Process
+    $p.StartInfo = $pinfo
+    $p.Start() | Out-Null
+    $p.WaitForExit()
+    if ($p.ExitCode -eq 0)
+    {
+        return $true
+    }
+    else
+    {
+        return $false
+    }
+}
+
 Properties {
     $path_root = $PSScriptRoot
     $modulename = (Get-Item -Path $path_root).Name
@@ -417,7 +455,7 @@ Task -name 'BuildScriptDependencies' {
     $Modules = @('pstools.psscriptinfo', 'configuration', 'pester')
     foreach ($module in $modules)
     {
-        if (-not (Get-Module -Name $module -ListAvailable))
+        if (-not (Get-Module -name $module -ListAvailable))
         {
             Write-CheckListItem -Severity Negative -Message "Module [$module] was not found, aborting..."
             break
@@ -443,8 +481,11 @@ Task -name 'PrepareModule' -depends @(
 Task -name 'Test' -depends @(
     'PrepareModule',
     'PesterModuleTests',
+    'PesterModuleTests_Core',
     'PesterUnitTests',
-    'PesterIntegrationTests'
+    'PesterUnitTests_Core',
+    'PesterIntegrationTests',
+    'PesterIntegrationTests_Core'
 )
 
 Task -name 'Release' -depend @(
@@ -847,7 +888,7 @@ Task -name 'UpdateFileList' -action {
             Push-Location -Path $path_root_source
             $AllSourceFiles = Get-ChildItem -Path $path_root_source -Exclude 'logs', 'output', 'temp' | Get-ChildItem -File -Recurse
             $AllSourceFiles | ForEach-Object {
-                $PSItem | Add-Member -MemberType NoteProperty -name RelativePath -Value (
+                $PSItem | Add-Member -MemberType NoteProperty -Name RelativePath -Value (
                     Resolve-Path -Path $PSItem.FullName -Relative
                 )
             }
@@ -866,66 +907,101 @@ Task -name 'UpdateFileList' -action {
     }
 } 
 
-Task -name 'PesterUnitTests' -precondition { $buildconfig.RunPesterTests } -action {    
+Task -name 'PesterUnitTests' -precondition { $buildconfig.RunPesterTests -and $buildconfig.edition.desktop } -action {    
     # Pester configuration
     if (Get-ChildItem "$path_root\Tests\Unit")
     {
-        $PesterConfig = [PesterConfiguration]::Default
-        $PesterConfig.Run.Path = "$path_root\Tests\Unit"
-        $PesterConfig.Run.PassThru = $true
-        $PesterConfig.Output.Verbosity = 'Detailed'
-        $Result = Invoke-Pester -Configuration $PesterConfig
-    
-        if ($Result.FailedCount -gt 0)
-        { 
-            throw
+        $Result = InvokePesterHelper -TypeOfTest Unit -powershellhost powershell -pathroot $path_root
+        if ($Result)
+        {
+            Write-CheckListItem -Message 'All pester tests passed' -Severity Positive
         }
         else
         {
-            Write-CheckListItem -Message 'All pester tests passed' -Severity Positive
+            throw
         }
     }
 } 
 
-Task -name 'PesterModuleTests' -precondition { $buildconfig.RunPesterTests } -action {    
+Task -name 'PesterModuleTests' -precondition { $buildconfig.RunPesterTests -and $buildconfig.edition.desktop } -action {    
     # Run Tests
     if (Get-ChildItem "$path_root\Tests\Module")
     {
-        $PesterConfig = [PesterConfiguration]::Default
-        $PesterConfig.Run.Path = "$path_root\Tests\Module"
-        $PesterConfig.Run.PassThru = $true
-        $PesterConfig.Output.Verbosity = 'Detailed'
-        $Result = Invoke-Pester -Configuration $PesterConfig
-    
-        if ($Result.FailedCount -gt 0)
-        { 
-            throw
+        $Result = InvokePesterHelper -TypeOfTest Module -powershellhost powershell -pathroot $path_root
+        if ($Result)
+        {
+            Write-CheckListItem -Message 'All pester tests passed' -Severity Positive
         }
         else
         {
-            Write-CheckListItem -Message 'All pester tests passed' -Severity Positive
+            throw
         }
     }
 } 
 
-Task -name 'PesterIntegrationTests' -precondition { $buildconfig.RunPesterTests } -action {   
+Task -name 'PesterIntegrationTests' -precondition { $buildconfig.RunPesterTests -and $buildconfig.edition.desktop } -action {   
 
     if (Get-ChildItem "$path_root\Tests\Integration")
     {
-        $PesterConfig = [PesterConfiguration]::Default
-        $PesterConfig.Run.Path = "$path_root\Tests\Integration"
-        $PesterConfig.Run.PassThru = $true
-        $PesterConfig.Output.Verbosity = 'Detailed'
-        $Result = Invoke-Pester -Configuration $PesterConfig
-    
-        if ($Result.FailedCount -gt 0)
-        { 
-            throw
-        }
-        else
+        $Result = InvokePesterHelper -TypeOfTest Integration -powershellhost powershell -pathroot $path_root
+        if ($Result)
         {
             Write-CheckListItem -Message 'All pester tests passed' -Severity Positive
         }
+        else
+        {
+            throw
+        }
+
+    }
+} 
+
+Task -name 'PesterUnitTests_Core' -precondition { $buildconfig.RunPesterTests -and $buildconfig.edition.core } -action {    
+    # Pester configuration
+    if (Get-ChildItem "$path_root\Tests\Unit")
+    {
+        $Result = InvokePesterHelper -TypeOfTest Unit -powershellhost pwsh -pathroot $path_root
+        if ($Result)
+        {
+            Write-CheckListItem -Message 'All pester tests passed' -Severity Positive
+        }
+        else
+        {
+            throw
+        }
+    }
+} 
+
+Task -name 'PesterModuleTests_Core' -precondition { $buildconfig.RunPesterTests -and $buildconfig.edition.core } -action {    
+    # Run Tests
+    if (Get-ChildItem "$path_root\Tests\Module")
+    {
+        $Result = InvokePesterHelper -TypeOfTest Module -powershellhost pwsh -pathroot $path_root
+        if ($Result)
+        {
+            Write-CheckListItem -Message 'All pester tests passed' -Severity Positive
+        }
+        else
+        {
+            throw
+        }
+    }
+} 
+
+Task -name 'PesterIntegrationTests_Core' -precondition { $buildconfig.RunPesterTests -and $buildconfig.edition.core } -action {   
+
+    if (Get-ChildItem "$path_root\Tests\Integration")
+    {
+        $Result = InvokePesterHelper -TypeOfTest Integration -powershellhost pwsh -pathroot $path_root
+        if ($Result)
+        {
+            Write-CheckListItem -Message 'All pester tests passed' -Severity Positive
+        }
+        else
+        {
+            throw
+        }
+
     }
 } 
 
@@ -933,10 +1009,10 @@ Task -name 'CreateModuleHelpFiles' -action {
     try
     {
         $Measure = Measure-Command -Expression {
-            Import-Module -name $path_modulemanifest -Scope Global -ErrorAction Stop
+            Import-Module -Name $path_modulemanifest -Scope Global -ErrorAction Stop
             $null = New-MarkdownHelp -Module $modulename -OutputFolder (Join-Path -Path $path_root_source -ChildPath '\en-US') -Force -ErrorAction Stop
             $null = New-ExternalHelp -Path (Join-Path -Path $path_root_source -ChildPath '\en-US') -OutputPath (Join-Path -Path $path_root_source -ChildPath '\en-US') -Force -ErrorAction Stop
-            Remove-Module -name $modulename -Force -ErrorAction Stop
+            Remove-Module -Name $modulename -Force -ErrorAction Stop
         }
     }
     catch
@@ -1002,7 +1078,7 @@ Task -name 'ExportSign' -precondition { $buildconfig.Sign } -action {
         {
             try
             {
-                $Cert = New-CodeSigningCert -Name 'HannesPalmquist' -FriendlyName 'HannesPalmquist' -ErrorAction Stop
+                $Cert = New-CodeSigningCert -name 'HannesPalmquist' -FriendlyName 'HannesPalmquist' -ErrorAction Stop
                 Write-CheckListItem -Message 'Successfully created Code Signing Certificate' -Severity Positive
             }
             catch
@@ -1016,7 +1092,7 @@ Task -name 'ExportSign' -precondition { $buildconfig.Sign } -action {
             Remove-Item -Path ('Cert:\CurrentUser\My\{0}' -f $Cert.Thumbprint) -Force
             try
             {
-                $Cert = New-CodeSigningCert -Name 'HannesPalmquist' -FriendlyName 'HannesPalmquist' -ErrorAction Stop
+                $Cert = New-CodeSigningCert -name 'HannesPalmquist' -FriendlyName 'HannesPalmquist' -ErrorAction Stop
                 Write-CheckListItem -Message 'Successfully renewed Code Signing Certificate' -Severity Positive
             }
             catch
