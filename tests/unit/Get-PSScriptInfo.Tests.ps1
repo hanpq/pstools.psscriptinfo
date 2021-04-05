@@ -49,6 +49,17 @@ Describe -Name 'Get-PSScriptInfo.ps1' -Fixture {
             { Get-PSScriptInfo -FilePath $file.fullname } | Should -Throw
         }
     }
+    Context -Name 'When file exist and legacy psscriptinfo is found' {
+        BeforeAll {
+            $file = New-Item -Path TestDrive:\file.ps1
+            Set-Content -Path $file.fullname -Value "<#PSScriptInfo`n`r.VERSION 1.0.0.0`n`r#>`r`nGet-Test`r`n"
+            function Get-PSScriptInfoLegacy {}
+            Mock Get-PSScriptInfoLegacy -MockWith {}
+        }
+        It 'Should not throw' {
+            { Get-PSScriptInfo -FilePath $file.fullname } | Should -not -Throw
+        }
+    }
     Context -Name 'When file exist and valid psscriptinfo is found' {
         BeforeAll {
             $file = New-Item -Path TestDrive:\file.ps1
