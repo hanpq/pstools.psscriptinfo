@@ -1,4 +1,5 @@
-﻿@{
+﻿
+@{
   RootModule = 'pstools.psscriptinfo.psm1'
   ModuleVersion = '1.3.8'
   CompatiblePSEditions = @('Desktop','Core')
@@ -13,7 +14,7 @@
   PrivateData = @{
     ModuleName = 'pstools.psscriptinfo.psm1'
     DateCreated = '2021-03-27'
-    LastBuildDate = '2021-04-04'
+    LastBuildDate = '2021-04-05'
     PSData = @{
       Tags = @('PSEdition_Desktop','PSEdition_Core','Windows','Linux','MacOS')
       ProjectUri = 'https://getps.dev/modules/pstools.psscriptinfo/quickstart'
@@ -45,7 +46,6 @@
   CLRVersion = ''
   ProcessorArchitecture = ''
 }
-
 
 
 

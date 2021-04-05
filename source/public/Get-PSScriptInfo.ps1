@@ -63,7 +63,7 @@ function Get-PSScriptInfo
         }
         catch
         {
-            if (($PSScriptInfoRaw[0].Trim() -like '.*') -and $_.exception.message -like '*Invalid JSON primitive*')
+            if (($PSScriptInfoRaw[0].Trim() -like '.*') -and ($_.exception.message -like '*Invalid JSON primitive*' -or $_.exception.message -like '*Unexpected character encountered while parsing number*'))
             {
                 # Legacy PSScriptInfo
                 Write-Verbose -Message 'Standard JSON parsing failed, trying legacy...'

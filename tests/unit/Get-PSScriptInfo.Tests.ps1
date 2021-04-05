@@ -57,7 +57,7 @@ Describe -Name 'Get-PSScriptInfo.ps1' -Fixture {
             Mock Get-PSScriptInfoLegacy -MockWith {}
         }
         It 'Should not throw' {
-            { Get-PSScriptInfo -FilePath $file.fullname } | Should -not -Throw
+            { Get-PSScriptInfo -FilePath $file.fullname } | Should -Not -Throw
         }
     }
     Context -Name 'When file exist and valid psscriptinfo is found' {
