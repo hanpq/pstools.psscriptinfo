@@ -9,7 +9,7 @@ Describe -Name 'Add-PSScriptInfo.ps1' -Fixture {
         BeforeAll {
             $File = New-Item TestDrive:\file.ps1 
             function Get-PSScriptInfo {}
-            Mock Get-PSScriptInfo -MockWith { throw }
+            Mock Get-PSScriptInfo -MockWith { $true }
         }
         It -Name 'Should throw' {
             { Add-PSScriptInfo -FilePath $File.FullName -Properties @{Version = '1.0.0.0' } } | Should -Throw
