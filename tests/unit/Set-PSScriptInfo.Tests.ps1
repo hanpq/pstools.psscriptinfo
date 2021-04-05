@@ -40,6 +40,16 @@ Describe -Name 'Set-PSScriptInfo.ps1' -Fixture {
             { Set-PSScriptInfo -FilePath $File.FullName -JSON "{$([system.environment]::NewLine)`"Version`":`"1.0.0.0`"$([system.environment]::NewLine)}" } | Should -Throw
         }
     }
+    Context -Name 'When file exists but content cannot be read' {
+        BeforeEach {
+            $File = New-Item -Path TestDrive:\file.ps1
+            Set-Content -Path $File.FullName -Value 'Get-Test'
+            Mock -CommandName Get-Content -MockWith { throw }
+        }
+        It -Name 'Should throw' {
+            { Set-PSScriptInfo -FilePath $File.FullName -JSON "{$([system.environment]::NewLine)`"Version`":`"1.0.0.0`"$([system.environment]::NewLine)}" } | Should -Throw
+        }
+    }
     Context -Name 'When writing to file fails' {
         BeforeEach {
             $File = New-Item -Path TestDrive:\file.ps1
