@@ -62,7 +62,7 @@ Describe -Name 'Get-PSScriptInfoLegacy.ps1' -Fixture {
     Context 'When PSScriptInfo contains key with string array' {
         BeforeAll {
             $file = New-Item -Path TestDrive:\file.ps1
-            Set-Content -Path $file.fullname -Value "<#PSScriptInfo`n`r.ARRAY foo,bar`n`r#>`r`nGet-Test`r`n"            
+            Set-Content -Path $file.fullname -Value "<#PSScriptInfo`n`r.ARRAY @(foo,bar)`n`r#>`r`nGet-Test`r`n"            
         }
         It -Name 'Should not throw' {
             { Get-PSScriptInfoLegacy -FilePath $file.fullname } | Should -Not -Throw
@@ -75,6 +75,16 @@ Describe -Name 'Get-PSScriptInfoLegacy.ps1' -Fixture {
         }
         It -Name 'Should not throw' {
             { Get-PSScriptInfoLegacy -FilePath $file.fullname } | Should -Not -Throw
+        }
+    }
+    Context 'When something fails' {
+        BeforeAll {
+            $file = New-Item -Path TestDrive:\file.ps1
+            Set-Content -Path $file.fullname -Value "<#PSScriptInfo`n`r.NONE `n`r#>`r`nGet-Test`r`n"         
+            Mock Select-Object -MockWith { throw }   
+        }
+        It -Name 'Should throw' {
+            { Get-PSScriptInfoLegacy -FilePath $file.fullname } | Should -Throw
         }
     }
 }

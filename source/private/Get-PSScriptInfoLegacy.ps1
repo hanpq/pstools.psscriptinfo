@@ -38,81 +38,63 @@ function Get-PSScriptInfoLegacy
             $null = [System.Management.Automation.Language.Parser]::ParseFile($FilePath, [ref]$astTokens, [ref]$astErr)
             $FileContent = $astTokens.where{ $_.kind -eq 'comment' -and $_.text.Replace("`r", '').Split("`n")[0] -like '<#PSScriptInfo*' } | Select-Object -expand text
             $FileContent = $FileContent.Replace("`r", '').Split("`n")
-            if ($FileContent)
-            {
-                $FileContent | Select-Object -Skip 1 | ForEach-Object {
-                    $CurrentRow = $PSItem
-                    if ($CurrentRow.Trim() -like '.*')
+            $FileContent | Select-Object -Skip 1 | ForEach-Object {
+                $CurrentRow = $PSItem
+                if ($CurrentRow.Trim() -like '.*')
+                {
+                    # New attribute found, extract attribute name
+                    $Attribute = $CurrentRow.Split('.')[1].Split(' ')[0]
+
+                    # Check if row has value
+                    if ($CurrentRow.Trim().Replace($Attribute, '').TrimStart('.').Trim().Length -gt 0)
                     {
-                        # New attribute found, extract attribute name
-                        $Attribute = $CurrentRow.Split('.')[1].Split(' ')[0]
 
-                        # Check if row has value
-                        if ($CurrentRow.Trim().Replace($Attribute, '').TrimStart('.').Trim().Length -gt 0)
+                        # Value on same row
+                        $Value = $CurrentRow.Trim().Split(' ', 2)[1].Trim()
+
+                        # Datetime
+                        if (@('CREATEDDATE' -contains $Attribute))
                         {
-
-                            # Value on same row
-                            $Value = $CurrentRow.Trim().Split(' ', 2)[1].Trim()
-
-                            # String Arrays
-                            if (@() -contains $Attribute)
-                            {
-                                $Value = $Value.Split(',').Trim()
-                            }
-                            # Datetime
-                            if (@('CREATEDDATE' -contains $Attribute))
-                            {
-                                $Value = $Value -as [string]
-                            }
-                            # System version
-                            if (@('VERSION' -contains $Attribute))
-                            {
-                                $Value = $Value -as [string]
-                            }
-                            # guid
-                            if (@('GUID' -contains $Attribute))
-                            {
-                                $Value = $Value -as [guid]
-                            }
-
-                            if (@('UNITTEST' -contains $Attribute))
-                            {
-                                if ($Value -eq 'false')
-                                {
-                                    $Value = $false
-                                }
-                                elseif ($Value -eq 'true')
-                                {
-                                    $Value = $true
-                                }
-                                else
-                                {
-                                    $Value = $null
-                                }
-                            }
-
-                            # Add attribute and value to PSScriptInfo
-                            $null = $PSScriptInfo.Add($Attribute, $Value)
+                            $Value = $Value -as [string]
                         }
-                        else
+                        # System version
+                        if (@('VERSION' -contains $Attribute))
                         {
-                            # If no value is provided populate PSScriptInfo with attribute and an empty collection as value
-                            $null = $PSScriptInfo.Add($Attribute, [collections.arraylist]::New())
+                            $Value = $Value -as [string]
                         }
+                        # guid
+                        if (@('GUID' -contains $Attribute))
+                        {
+                            $Value = $Value -as [guid]
+                        }
+
+                        if (@('UNITTEST' -contains $Attribute))
+                        {
+                            if ($Value -eq 'false')
+                            {
+                                $Value = $false
+                            }
+                            elseif ($Value -eq 'true')
+                            {
+                                $Value = $true
+                            }
+                            else
+                            {
+                                $Value = $null
+                            }
+                        }
+
+                        # Add attribute and value to PSScriptInfo
+                        $null = $PSScriptInfo.Add($Attribute, $Value)
                     }
-                    elseif ($CurrentRow -notlike '*#>*')
+                    else
                     {
-                        # If row is not an attribute and PSScriptInfo is not terminated add row as value in attribute collection
-                        $null = $PSScriptInfo.$Attribute.Add($CurrentRow.Trim())
+                        # If no value is provided populate PSScriptInfo with attribute and an empty collection as value
+                        $null = $PSScriptInfo.Add($Attribute, [collections.arraylist]::New())
                     }
-
                 }
-                Write-Output ([pscustomobject]$PSScriptInfo)
             }
-            else
-            {
-                Write-Error -Message 'No valid PSScriptInfo was found in file'
-            }
+            Write-Output ([pscustomobject]$PSScriptInfo)
         }
         catch
         {
