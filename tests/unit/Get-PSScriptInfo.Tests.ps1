@@ -5,6 +5,12 @@
 Describe -Name 'Get-PSScriptInfo.ps1' -Fixture {
     BeforeAll {
     }
+    Context 'When parsing files failed' {
+        It -Name 'Should throw' {
+            Mock -CommandName New-Variable -MockWith { throw }
+            { Get-PSScriptInfo -FilePath 'C:\Script\file.ps1' } | Should -Throw
+        }
+    }
     Context -Name 'When file do not exist' {
         It 'Should throw' {
             { Get-PSScriptInfo -FilePath 'C:\Script\file.ps1' } | Should -Throw

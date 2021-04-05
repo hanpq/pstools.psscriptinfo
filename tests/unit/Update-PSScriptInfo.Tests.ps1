@@ -5,6 +5,12 @@
 Describe -Name 'Update-PSScriptInfo.ps1' -Fixture {
     BeforeAll {
     }
+    Context 'When parsing files failed' {
+        It -Name 'Should throw' {
+            Mock -CommandName New-Variable -MockWith {throw}
+            { Update-PSScriptInfo -FilePath C:\Script\file.ps1 -Properties @{Version = '1.0.0.0' } } | Should -Throw
+        }
+    }
     Context 'When file does not exist' {
         It -Name 'Should throw' {
             { Update-PSScriptInfo -FilePath C:\Script\file.ps1 -Properties @{Version = '1.0.0.0' } } | Should -Throw
