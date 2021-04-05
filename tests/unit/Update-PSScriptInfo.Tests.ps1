@@ -6,13 +6,13 @@ Describe -Name 'Update-PSScriptInfo.ps1' -Fixture {
     BeforeAll {
     }
     Context 'When parsing files failed' {
-        It -Name 'Should throw' {
-            Mock -CommandName New-Variable -MockWith {throw}
+        It -name 'Should throw' {
+            Mock -CommandName New-Variable -MockWith { throw }
             { Update-PSScriptInfo -FilePath C:\Script\file.ps1 -Properties @{Version = '1.0.0.0' } } | Should -Throw
         }
     }
     Context 'When file does not exist' {
-        It -Name 'Should throw' {
+        It -name 'Should throw' {
             { Update-PSScriptInfo -FilePath C:\Script\file.ps1 -Properties @{Version = '1.0.0.0' } } | Should -Throw
         }
     }
@@ -20,7 +20,7 @@ Describe -Name 'Update-PSScriptInfo.ps1' -Fixture {
         BeforeAll {
             $file = New-Item -Path TestDrive:\file.ps1
         }
-        It -Name 'Should throw' {
+        It -name 'Should throw' {
             { Update-PSScriptInfo -FilePath $file.fullname -Properties 'foo' } | Should -Throw
         }
     }
@@ -30,7 +30,7 @@ Describe -Name 'Update-PSScriptInfo.ps1' -Fixture {
             function Get-PSScriptInfo {}
             Mock Get-PSScriptInfo { throw }
         }
-        It -Name 'Should throw' {
+        It -name 'Should throw' {
             { Update-PSScriptInfo -FilePath $file.fullname -Properties @{Version = '1.0.0.0' } } | Should -Throw
         }
     }
@@ -48,10 +48,10 @@ Describe -Name 'Update-PSScriptInfo.ps1' -Fixture {
                 $JSON | ConvertFrom-Json
             }
         }
-        It -Name 'Should not throw' {
+        It -name 'Should not throw' {
             { Update-PSScriptInfo -FilePath $file.fullname -Properties @{Version = '2.0.0.0' } } | Should -Not -Throw
         }
-        It -Name 'Should have expected content' {
+        It -name 'Should have expected content' {
             $Result = Update-PSScriptInfo -FilePath $file.fullname -Properties @{Version = '2.0.0.0' }
             $Result.Version | Should -Be '2.0.0.0'
         }
@@ -70,10 +70,10 @@ Describe -Name 'Update-PSScriptInfo.ps1' -Fixture {
                 $JSON | ConvertFrom-Json
             }
         }
-        It -Name 'Should not throw' {
+        It -name 'Should not throw' {
             { Update-PSScriptInfo -FilePath $file.fullname -Properties @{Version = '2.0.0.0'; Author = $null } } | Should -Not -Throw
         }
-        It -Name 'Should have expected content' {
+        It -name 'Should have expected content' {
             $Result = Update-PSScriptInfo -FilePath $file.fullname -Properties @{Version = '2.0.0.0'; Author = $null }
             $Result.Version | Should -Be '2.0.0.0'
             $Result.PSObject.Properties.Name | Should -Not -Contain 'Author'
@@ -93,10 +93,10 @@ Describe -Name 'Update-PSScriptInfo.ps1' -Fixture {
                 $JSON | ConvertFrom-Json
             }
         }
-        It -Name 'Should not throw' {
+        It -name 'Should not throw' {
             { Update-PSScriptInfo -FilePath $file.fullname -Properties @{Version = '2.0.0.0'; Author = 'Jane Doe' } } | Should -Not -Throw
         }
-        It -Name 'Should have expected content' {
+        It -name 'Should have expected content' {
             $Result = Update-PSScriptInfo -FilePath $file.fullname -Properties @{Version = '2.0.0.0'; Author = 'Jane Doe' }
             $Result.Version | Should -Be '2.0.0.0'
             $Result.PSObject.Properties.Name | Should -Contain 'Author'
@@ -110,9 +110,9 @@ Describe -Name 'Update-PSScriptInfo.ps1' -Fixture {
             Mock Get-PSScriptInfo { 
                 return ([pscustomobject]@{Version = '1.0.0.0' })
             }
-            Mock ConvertFrom-Json -MockWith { throw }
+            Mock ConvertTo-Json -MockWith { throw }
         }
-        It -Name 'Should throw' {
+        It -name 'Should throw' {
             { Update-PSScriptInfo -FilePath $file.fullname -Properties @{Version = '2.0.0.0'; Author = 'Jane Doe' } } | Should -Throw
         }
     }
@@ -126,7 +126,7 @@ Describe -Name 'Update-PSScriptInfo.ps1' -Fixture {
             function Remove-PSScriptInfo {}
             Mock Remove-PSScriptInfo -MockWith { throw }
         }
-        It -Name 'Should throw' {
+        It -name 'Should throw' {
             { Update-PSScriptInfo -FilePath $file.fullname -Properties @{Version = '2.0.0.0'; Author = 'Jane Doe' } } | Should -Throw
         }
     }
@@ -142,7 +142,7 @@ Describe -Name 'Update-PSScriptInfo.ps1' -Fixture {
             function Set-PSScriptInfo {}
             Mock Set-PSScriptInfo { throw }
         }
-        It -Name 'Should throw' {
+        It -name 'Should throw' {
             { Update-PSScriptInfo -FilePath $file.fullname -Properties @{Version = '2.0.0.0'; Author = 'Jane Doe' } } | Should -Throw
         }
     }

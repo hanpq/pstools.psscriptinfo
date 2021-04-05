@@ -6,9 +6,14 @@ Describe -Name 'Remove-PSScriptInfo.ps1' -Fixture {
     BeforeAll {
     }
     Context 'When parsing files failed' {
-        It -Name 'Should throw' {
+        BeforeAll {
+            $file = New-Item -Path TestDrive:\file.ps1
+            Set-Content -Path $file.fullname -Value 'function {}}'
+            function New-Variable {}
             Mock -CommandName New-Variable -MockWith { throw }
-            { Remove-PSScriptInfo -FilePath 'C:\Script\file.ps1' } | Should -Throw
+        }
+        It -name 'Should throw' {
+            { Remove-PSScriptInfo -FilePath $file.fullname } | Should -Throw
         }
     }
     Context -Name 'When file do not exist' {
