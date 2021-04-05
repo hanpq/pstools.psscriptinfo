@@ -5,6 +5,16 @@
 Describe -Name 'Add-PSScriptInfo.ps1' -Fixture {
     BeforeAll {
     }
+    Context -Name 'When file exists but PSScriptInfo throws' {
+        BeforeAll {
+            $File = New-Item TestDrive:\file.ps1 
+            function Get-PSScriptInfo {}
+            Mock Get-PSScriptInfo -MockWith { throw }
+        }
+        It -Name 'Should throw' {
+            { Add-PSScriptInfo -FilePath $File.FullName -Properties @{Version = '1.0.0.0' } } | Should -Throw
+        }
+    }
     Context -Name 'When file exists and valid PSScriptInfo is found' {
         BeforeAll {
             $File = New-Item TestDrive:\file.ps1 
