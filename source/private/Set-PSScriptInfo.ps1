@@ -33,7 +33,10 @@ function Set-PSScriptInfo
         
         [Parameter(Mandatory)]
         [string]
-        $JSON
+        $JSON,
+
+        [int]
+        $InsertAt = 0
     )
 
     try
@@ -62,7 +65,7 @@ function Set-PSScriptInfo
     $StringBuilder = [System.Text.StringBuilder]::new(($FileContent) -join ([system.environment]::NewLine))
     Write-Verbose -Message ('Created stringbuilder')
 
-    $null = $StringBuilder.Insert(0, ($JSON))
+    $null = $StringBuilder.Insert($InsertAt, ($JSON))
     Write-Verbose -Message ('Inserted PSScriptInfo at beginning of content block')
 
     try
@@ -74,7 +77,5 @@ function Set-PSScriptInfo
     {
         throw ('Failed to write content block back to file with error: {0}' -f $_.exception.message)
     }
-
-
 }
 #endregion

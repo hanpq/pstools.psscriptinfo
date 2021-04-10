@@ -71,7 +71,7 @@ function Remove-PSScriptInfo
         }
         
         # Exclude PSScriptInfo
-        $NewContent = ($FileContent | Select-Object -First ($StartLine - 1) -ErrorAction stop) + ($FileContent | Select-Object -Skip ($EndLine) -ErrorAction Stop)
+        $NewContent = @($FileContent | Select-Object -First ($StartLine - 1) -ErrorAction stop) + @($FileContent | Select-Object -Skip ($EndLine) -ErrorAction Stop)
         Write-Verbose -Message 'Concatinated content around removed PSScriptInfo'
 
         # Write content back to file
@@ -84,6 +84,13 @@ function Remove-PSScriptInfo
         {
             throw "Failed to write content back to file with error: $PSItem"
         }
+
+        return ([pscustomobject]@{
+                StartLine   = $StartLine
+                EndLine     = $EndLine
+                StartOffset = $PSScriptInfo.extent.StartOffset
+                EndOffset   = $PSScriptInfo.extent.EndOffset
+            })
 
     }
 }

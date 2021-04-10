@@ -98,7 +98,7 @@ function Update-PSScriptInfo
 
         try
         {
-            Remove-PSScriptInfo -FilePath $FilePath -ErrorAction Stop
+            $RemovedPosition = Remove-PSScriptInfo -FilePath $FilePath -ErrorAction Stop
             Write-Verbose -Message 'Removed old PSScriptInfo from file'
         }
         catch 
@@ -108,7 +108,7 @@ function Update-PSScriptInfo
         
         try
         {
-            Set-PSScriptInfo -FilePath $FilePath -JSON $JSON -ErrorAction Stop
+            Set-PSScriptInfo -FilePath $FilePath -JSON $JSON -InsertAt $RemovedPosition.StartOffSet -ErrorAction Stop
             Write-Verbose -Message 'Added updated PSScriptInfo to file'
         }
         catch
