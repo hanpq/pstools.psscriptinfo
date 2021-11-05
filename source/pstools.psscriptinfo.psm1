@@ -62,11 +62,11 @@ if ($Continue)
         $AuthResult = Get-AuthenticodeSignature -FilePath $PSItem.FullName | Select-Object -ExpandProperty Status
         if ($AuthResult -eq 'HashMismatch')
         {
-            $Passing = $false
-            Write-Host "Hash validation failed to $($PSItem.Name). The script has been modified. To protect the system this module will not load." -ForegroundColor Red
+            $script:Passing = $false
+            Write-Error "Hash validation failed to $($PSItem.Name). The script has been modified. To protect the system this module will not load."
         }
     }
-    if ($Passing -eq $false)
+    if ($script:Passing -eq $false)
     {
         break
     }
