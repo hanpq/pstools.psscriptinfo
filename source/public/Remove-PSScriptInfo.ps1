@@ -1,18 +1,19 @@
 ﻿<#PSScriptInfo
 {
-    "VERSION":  "1.0.0.0",
-    "GUID":  "1d1a8e42-48bf-4c9f-9d62-e01484b5eb1a",
-    "FILENAME":  "Remove-PSScriptInfo.ps1",
-    "AUTHOR":  "Hannes Palmquist",
-    "AUTHOREMAIL":  "hannes.palmquist@outlook.com",
-    "CREATEDDATE":  "2021-03-28",
-    "COMPANYNAME":  "N/A",
-    "COPYRIGHT":  "© 2021, Hannes Palmquist, All Rights Reserved"
+  "VERSION": "1.0.0.0",
+  "GUID": "1d1a8e42-48bf-4c9f-9d62-e01484b5eb1a",
+  "FILENAME": "Remove-PSScriptInfo.ps1",
+  "AUTHOR": "Hannes Palmquist",
+  "AUTHOREMAIL": "hannes.palmquist@outlook.com",
+  "CREATEDDATE": "2021-03-28",
+  "COMPANYNAME": "N/A",
+  "COPYRIGHT": "© 2021, Hannes Palmquist, All Rights Reserved"
 }
 PSScriptInfo#>
 
 function Remove-PSScriptInfo
 {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'No system state changed')]
     <#
     .DESCRIPTION
         Removes a PSScriptInfo block from a script file
@@ -69,7 +70,7 @@ function Remove-PSScriptInfo
         {
             throw "Failed to read file content with error: $PSItem"
         }
-        
+
         # Exclude PSScriptInfo
         $NewContent = @($FileContent | Select-Object -First ($StartLine - 1) -ErrorAction stop) + @($FileContent | Select-Object -Skip ($EndLine) -ErrorAction Stop)
         Write-Verbose -Message 'Concatinated content around removed PSScriptInfo'

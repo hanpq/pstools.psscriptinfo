@@ -1,13 +1,13 @@
 ﻿<#PSScriptInfo
 {
-    "VERSION":  "1.0.0.0",
-    "GUID":  "dd14abf0-8b1b-425f-9498-8dfaf657ae9f",
-    "FILENAME":  "Get-PSScriptInfoLegacy.ps1",
-    "AUTHOR":  "Hannes Palmquist",
-    "AUTHOREMAIL":  "hannes.palmquist@outlook.com",
-    "CREATEDDATE":  "2019-09-23",
-    "COMPANYNAME":  "N/A",
-    "COPYRIGHT":  "(c) 2019, Hannes Palmquist, All Rights Reserved"
+  "VERSION": "1.0.0.0",
+  "GUID": "dd14abf0-8b1b-425f-9498-8dfaf657ae9f",
+  "FILENAME": "Get-PSScriptInfoLegacy.ps1",
+  "AUTHOR": "Hannes Palmquist",
+  "AUTHOREMAIL": "hannes.palmquist@outlook.com",
+  "CREATEDDATE": "2019-09-23",
+  "COMPANYNAME": "N/A",
+  "COPYRIGHT": "(c) 2019, Hannes Palmquist, All Rights Reserved"
 }
 PSScriptInfo#>
 
@@ -36,7 +36,7 @@ function Get-PSScriptInfoLegacy
             New-Variable astTokens -Force
             New-Variable astErr -Force
             $null = [System.Management.Automation.Language.Parser]::ParseFile($FilePath, [ref]$astTokens, [ref]$astErr)
-            $FileContent = $astTokens.where{ $_.kind -eq 'comment' -and $_.text.Replace("`r", '').Split("`n")[0] -like '<#PSScriptInfo*' } | Select-Object -expand text
+            $FileContent = $astTokens.where{ $_.kind -eq 'comment' -and $_.text.Replace("`r", '').Split("`n")[0] -like '<#PSScriptInfo*' } | Select-Object -ExpandProperty text
             $FileContent = $FileContent.Replace("`r", '').Split("`n")
             $FileContent | Select-Object -Skip 1 | ForEach-Object {
                 $CurrentRow = $PSItem

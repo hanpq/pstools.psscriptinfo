@@ -23,11 +23,9 @@ Add new PSScriptInfo to file
 ### EXAMPLE 1
 ```
 Add-PSScriptInfo -FilePath C:\Scripts\Do-Something.ps1 -Properties @{Version='1.0.0';Author='Jane Doe';DateCreated='2021-01-01'}
-```
-
-Adds a PSScriptInfo block containing the properties version and author.
-Resulting PSScriptInfo block 
+Adds a PSScriptInfo block containing the properties version and author. Resulting PSScriptInfo block
 that would be added to the beginning of the file would look like:
+```
 
 \<#PSScriptInfo
 {

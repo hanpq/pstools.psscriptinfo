@@ -1,13 +1,13 @@
 ﻿<#PSScriptInfo
 {
-    "VERSION":  "1.0.0.0",
-    "GUID":  "dd14abf0-8b1b-425f-9498-8dfaf657ae9f",
-    "FILENAME":  "Get-PSScriptInfo.ps1",
-    "AUTHOR":  "Hannes Palmquist",
-    "AUTHOREMAIL":  "hannes.palmquist@outlook.com",
-    "CREATEDDATE":  "2019-09-23",
-    "COMPANYNAME":  "N/A",
-    "COPYRIGHT":  "(c) 2019, Hannes Palmquist, All Rights Reserved"
+  "VERSION": "1.0.0.0",
+  "GUID": "dd14abf0-8b1b-425f-9498-8dfaf657ae9f",
+  "FILENAME": "Get-PSScriptInfo.ps1",
+  "AUTHOR": "Hannes Palmquist",
+  "AUTHOREMAIL": "hannes.palmquist@outlook.com",
+  "CREATEDDATE": "2019-09-23",
+  "COMPANYNAME": "N/A",
+  "COPYRIGHT": "(c) 2019, Hannes Palmquist, All Rights Reserved"
 }
 PSScriptInfo#>
 
@@ -46,7 +46,7 @@ function Get-PSScriptInfo
         }
 
         # Find PSScriptInfo comment token
-        $PSScriptInfoText = $astTokens.where{ $_.kind -eq 'comment' -and $_.text.Replace("`r", '').Split("`n")[0] -like '<#PSScriptInfo*' } | Select-Object -expand text -ErrorAction stop
+        $PSScriptInfoText = $astTokens.where{ $_.kind -eq 'comment' -and $_.text.Replace("`r", '').Split("`n")[0] -like '<#PSScriptInfo*' } | Select-Object -ExpandProperty text -ErrorAction stop
         Write-Verbose -Message 'Parsed powershell script file and extracted raw PSScriptInfoText'
 
         if (-not $PSScriptInfoText)

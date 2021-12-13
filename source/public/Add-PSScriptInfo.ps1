@@ -1,13 +1,13 @@
 ﻿<#PSScriptInfo
 {
-    "VERSION":  "1.0.0.0",
-    "GUID":  "c02735fa-9049-4926-80b8-a37dd26cf23a",
-    "FILENAME":  "New-PSScriptInfo.ps1",
-    "AUTHOR":  "Hannes Palmquist",
-    "AUTHOREMAIL":  "hannes.palmquist@outlook.com",
-    "CREATEDDATE":  "2019-09-23",
-    "COMPANYNAME":  "N/A",
-    "COPYRIGHT":  "© 2019, Hannes Palmquist, All Rights Reserved"
+  "VERSION": "1.0.0.0",
+  "GUID": "c02735fa-9049-4926-80b8-a37dd26cf23a",
+  "FILENAME": "New-PSScriptInfo.ps1",
+  "AUTHOR": "Hannes Palmquist",
+  "AUTHOREMAIL": "hannes.palmquist@outlook.com",
+  "CREATEDDATE": "2019-09-23",
+  "COMPANYNAME": "N/A",
+  "COPYRIGHT": "© 2019, Hannes Palmquist, All Rights Reserved"
 }
 PSScriptInfo#>
 
@@ -24,7 +24,7 @@ function Add-PSScriptInfo
         Use force to replace any existing PSScriptInfo block
     .EXAMPLE
         Add-PSScriptInfo -FilePath C:\Scripts\Do-Something.ps1 -Properties @{Version='1.0.0';Author='Jane Doe';DateCreated='2021-01-01'}
-        Adds a PSScriptInfo block containing the properties version and author. Resulting PSScriptInfo block 
+        Adds a PSScriptInfo block containing the properties version and author. Resulting PSScriptInfo block
         that would be added to the beginning of the file would look like:
 
         <#PSScriptInfo
